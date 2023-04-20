@@ -3,6 +3,7 @@ const pasoInicial = 1;
 const pasoFinal = 3;
 
 const cita = {
+  id: "",
   nombre: "",
   fecha: "",
   hora: "",
@@ -22,6 +23,7 @@ function iniciarApp() {
 
   consultarAPI(); //Consulta la API en el backend de PHP
 
+  idCliente(); //Asigna Id al objeto de cita
   nombreCliente(); //Añade el nombre del cliente al objeto de cita
   seleccionarFecha(); //Añade fecha al objeto de cita
   seleccionarHora(); //Añade la fecha de la cita en el objeto
@@ -156,6 +158,10 @@ function seleccionarServicio(servicio) {
   }
 }
 
+function idCliente() {
+  cita.id = document.querySelector("#id").value;
+}
+
 function nombreCliente() {
   cita.nombre = document.querySelector("#nombre").value;
 }
@@ -254,8 +260,6 @@ function mostrarResumen() {
     contenedorServicio.appendChild(precioServicio);
 
     resumen.appendChild(contenedorServicio);
-
-    console.log(resumen);
   });
 
   //Heading para cita en resumen
@@ -301,10 +305,46 @@ function mostrarResumen() {
   resumen.appendChild(botonReservar);
 }
 
-function reservarCita() {
-  const datos = new FormData();
+async function reservarCita() {
+  const { nombre, fecha, hora, servicios, id } = cita;
 
-  datos.append("nombre", "Arturo");
+  const idServicios = servicios.map((servicio) => servicio.id);
+
+  const datos = new FormData();
+  datos.append("usuarioId", id);
+  datos.append("fecha", fecha);
+  datos.append("hora", hora);
+  datos.append("servicios", idServicios);
+
+  try {
+    //Peticion hacia la API
+    const url = "http://localhost:3000/api/citas";
+    const respuesta = await fetch(url, {
+      method: "POST",
+      body: datos,
+    });
+
+    const resultado = await respuesta.json();
+
+    if (resultado.resultado) {
+      Swal.fire({
+        icon: "succes",
+        title: "Cita Creada",
+        text: "Tu cita fue creada correctamente",
+        button: "OK",
+      }).then(() => {
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
+      });
+    }
+  } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo un error al guardar la cita",
+        });
+  }
 
   //console.log([...datos]);
 }
