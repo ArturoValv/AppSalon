@@ -2,14 +2,15 @@
 
 namespace Controllers;
 
-use Model\Usuario;
 use MVC\Router;
 use Classes\Email;
+use Model\Usuario;
 
 class LoginController
 {
     public static function login(Router $router)
     {
+
         $alertas = [];
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
