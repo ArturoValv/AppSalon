@@ -1,0 +1,19 @@
+<IfModule mod_negotiation.c>
+    Options -MultiViews
+</IfModule>
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond ${HTTPS} off
+    RewriteRule ^(.*)$ https://appsalon.devalart.com/$1 [QSA,PT,L,R=301]
+    
+    # Excluir carpetas específicas de las reglas de reescritura
+    RewriteRule ^(views/admin|views/cita|views/servicios)/ - [L]
+
+    # Redirigir todas las demás solicitudes a index.php
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ index.php/$1 [QSA,PT,L]
+</IfModule>
