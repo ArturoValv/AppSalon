@@ -1,0 +1,14 @@
+DirectoryIndex index.php
+
+RewriteEngine On
+
+# Excluir carpetas específicas de las reglas de reescritura
+RewriteRule ^(views/admin|views/cita|views/servicios)/ - [L]
+
+# Redirigir la raíz a public/index.php
+RewriteRule ^$ public/index.php [L]
+
+# Redirigir todas las demás solicitudes a public/$1
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^((?!public/).*)$ public/$1 [L,NC]
